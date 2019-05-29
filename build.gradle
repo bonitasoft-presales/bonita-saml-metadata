@@ -21,6 +21,9 @@ repositories {
 }
 
 dependencies {
+    compile 'org.keycloak:keycloak-saml-adapter-api-public:2.5.0.Final'
+    compile 'org.keycloak:keycloak-saml-servlet-filter-adapter:2.5.0.Final'
+
     // Use the latest Groovy version for building this library
     implementation 'org.codehaus.groovy:groovy-all:2.5.4'
 
