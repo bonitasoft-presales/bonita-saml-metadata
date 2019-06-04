@@ -21,6 +21,10 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor "org.projectlombok:lombok:1.18.4"
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    compileOnly 'org.slf4j:slf4j-api:1.6.1'
+
     compile 'org.keycloak:keycloak-saml-adapter-api-public:2.5.0.Final'
     compile 'org.keycloak:keycloak-saml-servlet-filter-adapter:2.5.0.Final'
 

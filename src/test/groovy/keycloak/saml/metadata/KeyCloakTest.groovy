@@ -7,8 +7,8 @@ class KeyCloakTest extends Specification {
 
     KeyCloak keyCloak
 
-    def setup(){
-        keyCloak=new KeyCloak()
+    def setup() {
+        keyCloak = new KeyCloak()
     }
 
 
@@ -17,11 +17,14 @@ class KeyCloakTest extends Specification {
     }
 
     def "GetFile"() {
+        given:
+        SamlModel samlModel = keyCloak.getModel("keycloak-saml.xml", endPoint)
+
         when:
-        def file = keyCloak.getFile()
+        def xmlDescriptor = keyCloak.fromModel(samlModel)
 
         then:
-        file == null
+        xmlDescriptor == "*"
 
     }
 }
