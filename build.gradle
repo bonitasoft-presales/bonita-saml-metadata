@@ -12,6 +12,13 @@ plugins {
 
     // Apply the application plugin to add support for building an application
     id 'application'
+
+    //XJC
+    id "com.github.edeandrea.xjc-generation" version "1.0"
+}
+
+ext{
+    jaxbVersion =  '2.2.11'
 }
 
 repositories {
@@ -21,6 +28,12 @@ repositories {
 }
 
 dependencies {
+    xjc "javax.xml.bind:jaxb-api:$jaxbVersion"
+    xjc "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
+    xjc "com.sun.xml.bind:jaxb-xjc:$jaxbVersion"
+    xjc "com.sun.xml.bind:jaxb-core:$jaxbVersion"
+    xjc 'javax.activation:activation:1.1.1'
+    
     annotationProcessor "org.projectlombok:lombok:1.18.4"
     compileOnly 'org.projectlombok:lombok:1.18.4'
     compileOnly 'org.slf4j:slf4j-api:1.6.1'
@@ -33,6 +46,10 @@ dependencies {
 
     // Use the awesome Spock testing and specification framework
     testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
+}
+
+xjcGeneration {
+    defaultBindingFile
 }
 
 // Define the main class for the application

@@ -1,24 +1,29 @@
 package keycloak.saml.metadata
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
-import static keycloak.saml.metadata.XmlHelper.XSD_1_6
+import static keycloak.saml.metadata.XmlHelper.*
 
 class XmlHelperTest extends Specification {
 
-    def "should #xmlFile validate XSD"(String xmlFile) {
+    @Unroll
+    def "should #xmlFile validate XSD"(String xmlFile, String xsdFile) {
         setup:
         XmlHelper xmlHelper = new XmlHelper()
         def xmlContent = new File(this.class.getResource("/$xmlFile").file).text
 
         when:
-        def result = xmlHelper.isValidAgainstXSD(xmlContent, XSD_1_6)
+        def result = xmlHelper.isValidAgainstXSD(xmlContent, xsdFile)
 
         then:
         result
 
         where:
-        xmlFile << ["keycloak-saml.xml"]
+        xmlFile                | xsdFile
+        "keycloak-saml.xml"    | KEYCLOAK_XSD_1_6
+        "keycloak-example.xml" | KEYCLOAK_XSD_1_6
+        "sp-metadata.xml"          | METADATA_XSD_2_0
 
 
     }
@@ -29,7 +34,7 @@ class XmlHelperTest extends Specification {
         String xmlContent = new File(this.class.getResource("/$xmlFile").file).text
 
         when:
-        def result = xmlHelper.applyXsl(xmlContent,"/xsl/keycloak-saml_to_metadata.xsl")
+        def result = xmlHelper.applyXsl(xmlContent, "/xsl/keycloak-saml_to_metadata.xsl")
 
         then:
         result == "*"
