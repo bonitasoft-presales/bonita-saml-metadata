@@ -12,34 +12,29 @@ plugins {
 
     // Apply the application plugin to add support for building an application
     id 'application'
-
-    //XJC
-    id "com.github.edeandrea.xjc-generation" version "1.0"
 }
 
-ext{
-    jaxbVersion =  '2.2.11'
-}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    xjc "javax.xml.bind:jaxb-api:$jaxbVersion"
-    xjc "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
-    xjc "com.sun.xml.bind:jaxb-xjc:$jaxbVersion"
-    xjc "com.sun.xml.bind:jaxb-core:$jaxbVersion"
-    xjc 'javax.activation:activation:1.1.1'
-    
+
     annotationProcessor "org.projectlombok:lombok:1.18.4"
     compileOnly 'org.projectlombok:lombok:1.18.4'
     compileOnly 'org.slf4j:slf4j-api:1.6.1'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.61'
+    compile 'org.bouncycastle:bcpkix-jdk15on:1.61'
 
-    compile 'org.keycloak:keycloak-saml-adapter-api-public:2.5.0.Final'
-    compile 'org.keycloak:keycloak-saml-servlet-filter-adapter:2.5.0.Final'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile 'com.onelogin:java-saml:2.4.0'
 
     // Use the latest Groovy version for building this library
     implementation 'org.codehaus.groovy:groovy-all:2.5.4'
@@ -48,9 +43,6 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
 }
 
-xjcGeneration {
-    defaultBindingFile
-}
 
 // Define the main class for the application
 mainClassName = 'keycloak.saml.metadata.App'
