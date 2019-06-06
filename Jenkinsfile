@@ -9,11 +9,16 @@ ansiColor('xterm') {
         }
 
         stage('Build') {
-            sh './gradlew clean build '
+            try {
+                sh './gradlew clean build '
+            }
+            catch (e) {
+                // archive test result
+            }
         }
 
         stage('Archive') {
-             archiveArtifacts artifacts: "build/distribution/*.zip", fingerprint: true, flatten:true
+             archiveArtifacts artifacts: "build/distribution/*.zip build/reports/tests/test/index.html", fingerprint: true, flatten:true
 
         }
     }
