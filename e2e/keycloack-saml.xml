@@ -1,0 +1,52 @@
+<keycloak-saml-adapter>
+    <SP entityID="http://xxxxxxx"
+        sslPolicy="ALL"
+        nameIDPolicyFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        forceAuthentication="false"
+        isPassive="false"
+        turnOffChangeSessionIdOnLogin="true">
+        <Keys>
+            <Key signing="true" encryption="true">
+                <PrivateKeyPem>
+                    -----BEGIN PRIVATE KEY-----
+                    [...]
+                    -----END PRIVATE KEY-----
+                </PrivateKeyPem>
+                <CertificatePem>
+                    -----BEGIN CERTIFICATE-----
+                    [...]
+                    -----END CERTIFICATE-----
+                </CertificatePem>
+            </Key>
+        </Keys>
+        <PrincipalNameMapping policy="FROM_ATTRIBUTE" attribute="Login"/>
+        <IDP entityID="https://xxxxxxx-xxxxxx.fr/xxxxx"
+             signaturesRequired="true"
+             signatureAlgorithm="RSA_SHA256">
+            <SingleSignOnService signRequest="true"
+                                 validateResponseSignature="true"
+                                 requestBinding="POST"
+                                 responseBinding="POST"
+                                 bindingUrl="https://xxxxxxx-xxxxxx.fr/xxx/xx/xx/SAML2/POST/SSO"/>
+            <SingleLogoutService signRequest="true"
+                                 signResponse="true"
+                                 validateRequestSignature="true"
+                                 validateResponseSignature="true"
+                                 requestBinding="POST"
+                                 responseBinding="POST"
+                                 postBindingUrl="https://xxxxxxx-xxxxxx.fr/xxx/xx/xx/SAML2/POST/SLO"
+                                 redirectBindingUrl="https://xxxxxxx-xxxxxx.fr/xxx/xx/xx/SAML2/Redirect/SLO"/>
+            <Keys>
+                <Key signing="true">
+                    <CertificatePem>
+                        -----BEGIN CERTIFICATE-----
+                        [...]
+                        -----END CERTIFICATE-----
+                    </CertificatePem>
+                </Key>
+            </Keys>
+        </IDP>
+    </SP>
+</keycloak-saml-adapter>
+
+
