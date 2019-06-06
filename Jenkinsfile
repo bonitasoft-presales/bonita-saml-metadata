@@ -11,6 +11,8 @@ ansiColor('xterm') {
         stage('Build') {
             try{
                 sh './gradlew clean build '
+            }catch (e) {
+                //do nothing
             }
         }
 
