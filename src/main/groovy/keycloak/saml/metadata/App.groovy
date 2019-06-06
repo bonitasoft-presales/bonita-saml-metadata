@@ -24,7 +24,6 @@ class App {
 
         def samlModel = new SamlModel(xmlKeyCloak, endpoint)
         keyCloak.generateMetadata(samlModel, properties)
-
     }
 
     static void main(String[] args) {
@@ -40,16 +39,15 @@ class App {
         } catch (ParseException exp) {
             System.err.println("ERROR: error while parsing arguments " + exp.getMessage())
             HelpFormatter formatter = new HelpFormatter()
-            formatter.printHelp("keycloak-saml-metadata[.bat]", options);
+            formatter.printHelp("keycloak-saml-metadata[.bat]", options)
             System.exit(1)
         }
-
     }
 
     private static void start(CommandLine cmd, Options options, String propertyFile) {
         if (cmd.hasOption("h")) {
             HelpFormatter formatter = new HelpFormatter()
-            formatter.printHelp("keycloak-saml-metadata[.bat]", options);
+            formatter.printHelp("keycloak-saml-metadata[.bat]", options)
             System.exit(0)
         }
 
@@ -64,9 +62,7 @@ class App {
             println "using property file ${file.getAbsolutePath()}"
         }
         Properties properties = new Properties()
-        file.withInputStream {
-            properties.load(it)
-        }
+        file.withInputStream { properties.load(it) }
 
         properties. load(new FileInputStream(file.getAbsolutePath()))
         new App().execute(properties)

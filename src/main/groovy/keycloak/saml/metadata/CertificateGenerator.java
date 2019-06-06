@@ -61,7 +61,7 @@ public class CertificateGenerator {
     }
 
     private static X509Certificate generateSelfSignedCertificate(String host, int validityInDays, SecureRandom random,
-                                                                 KeyPair keypair) throws IOException, OperatorCreationException, CertificateException {
+            KeyPair keypair) throws IOException, OperatorCreationException, CertificateException {
         // fill in certificate fields
         X500Name subject = new X500NameBuilder(BCStyle.INSTANCE)
                 .addRDN(BCStyle.CN, host)
@@ -86,7 +86,7 @@ public class CertificateGenerator {
                 constraints.getEncoded());
         KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature);
         certificate.addExtension(Extension.keyUsage, false, usage.getEncoded());
-        ExtendedKeyUsage usageEx = new ExtendedKeyUsage(new KeyPurposeId[]{
+        ExtendedKeyUsage usageEx = new ExtendedKeyUsage(new KeyPurposeId[] {
                 KeyPurposeId.id_kp_serverAuth,
                 KeyPurposeId.id_kp_clientAuth
         });
@@ -104,7 +104,7 @@ public class CertificateGenerator {
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
         converter.setProvider(new
 
-                BouncyCastleProvider());
+        BouncyCastleProvider());
         return converter.getCertificate(holder);
     }
 

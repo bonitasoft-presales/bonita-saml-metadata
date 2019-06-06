@@ -45,7 +45,7 @@ class AppTest extends Specification {
         def stream = new FileOutputStream(props)
         properties.store(stream,"")
 
-        String[] args = ["-p",props.getAbsolutePath()]
+        String[] args = ["-p", props.getAbsolutePath()]
 
         when:
         App.main(args)

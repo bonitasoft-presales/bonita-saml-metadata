@@ -52,6 +52,4 @@ class KeyCloak {
         def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
         new SamlModel(xmlContent, endPoint)
     }
-
-
 }

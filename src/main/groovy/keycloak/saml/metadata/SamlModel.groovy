@@ -30,6 +30,5 @@ class SamlModel {
 
 
         this.nameIdPolicyFormat = sp.PrincipalNameMapping.@attribute
-
     }
 }
