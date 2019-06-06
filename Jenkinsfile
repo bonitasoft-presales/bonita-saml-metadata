@@ -17,11 +17,7 @@ ansiColor('xterm') {
         }
 
         stage('End to End ') {
-            try{
-                sh './e2e.sh'
-            }catch (e) {
-                //do nothing
-            }
+            sh './e2e.sh'
         }
 
         stage('Archive') {

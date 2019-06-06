@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 ./gradlew  check  distZip
-cd build/distributions
-unzip -q -o keycloak-saml-metadata.zip
-cd keycloak-saml-metadata
+unzip -q -o build/distributions/keycloak-saml-metadata.zip -d build/distributions
+
+cp e2e/keycloack-saml.xml build/distributions/keycloak-saml-metadata/keycloak-example.xml
+cd build/distributions/keycloak-saml-metadata
+
 pwd
 ls -l
 
