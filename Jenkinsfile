@@ -16,6 +16,14 @@ ansiColor('xterm') {
             }
         }
 
+        stage('End to End ') {
+            try{
+                sh './e2e.sh'
+            }catch (e) {
+                //do nothing
+            }
+        }
+
         stage('Archive') {
              archiveArtifacts artifacts: "build/distributions/*.zip, build/reports/tests/test/index.html", allowEmptyArchive: true, flatten:true
 
