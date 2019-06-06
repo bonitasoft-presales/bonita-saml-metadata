@@ -9,12 +9,7 @@ ansiColor('xterm') {
         }
 
         stage('Build') {
-            try {
-                sh './gradlew clean build '
-            }
-            catch (e) {
-                // archive test result
-            }
+            sh './gradlew clean build '
         }
 
         stage('Archive') {
