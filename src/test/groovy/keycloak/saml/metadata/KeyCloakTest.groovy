@@ -15,10 +15,13 @@ class KeyCloakTest extends Specification {
     @Unroll
     def "should parse #xmlFile"(xmlFile) {
         given:
-        SamlModel samlModel = keyCloak.getModel(xmlFile, "http://example.com:1234/bonita")
+        def samlModel = keyCloak.getModel(xmlFile, "http://example.com:1234/bonita")
+        Properties properties=new Properties()
+        properties.load(this.class.getResourceAsStream("/application.properties"))
+
 
         when:
-        def xmlContent = keyCloak.generateMetadata(samlModel)
+        def xmlContent = keyCloak.generateMetadata(samlModel,properties)
 
         then:
         xmlContent != null

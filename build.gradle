@@ -27,19 +27,29 @@ repositories {
 dependencies {
 
     annotationProcessor "org.projectlombok:lombok:1.18.4"
+
     compileOnly 'org.projectlombok:lombok:1.18.4'
     compileOnly 'org.slf4j:slf4j-api:1.6.1'
+
     compile 'org.bouncycastle:bcprov-jdk15on:1.61'
     compile 'org.bouncycastle:bcpkix-jdk15on:1.61'
-
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.onelogin:java-saml:2.4.0'
+    compile 'commons-cli:commons-cli:1.4'
 
-    // Use the latest Groovy version for building this library
     implementation 'org.codehaus.groovy:groovy-all:2.5.4'
-
-    // Use the awesome Spock testing and specification framework
     testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
+}
+
+
+distributions {
+    main {
+        contents {
+            into ''
+            from("${buildDir}/resources/main/application.properties")
+            from("${buildDir}/resources/test/keycloak-example.xml")
+        }
+    }
 }
 
 

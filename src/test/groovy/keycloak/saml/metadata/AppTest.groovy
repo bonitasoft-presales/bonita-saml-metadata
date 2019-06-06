@@ -3,17 +3,54 @@
  */
 package keycloak.saml.metadata
 
+import org.apache.commons.cli.CommandLine
 import spock.lang.Specification
 
+import java.nio.file.Files
+
 class AppTest extends Specification {
-    def "application has a greeting"() {
+
+
+    def "should generate metadata"() {
         setup:
         def app = new App()
+        Properties properties = new Properties()
+        properties.load(this.class.getResourceAsStream("/application.properties"))
+
+        def xml = this.class.getResourceAsStream("/keycloak-example.xml").text
+        def file = Files.createTempFile("keycloak", ".xml").toFile()
+        file.text = xml
+        properties.setProperty("org.bonitasoft.keycloak", file.getAbsolutePath())
 
         when:
-        def result = app.greeting
+        def result = app.execute(properties)
 
         then:
         result != null
+    }
+
+    def "should get parameters"() {
+        setup:
+        def app = new App()
+        Properties properties = new Properties()
+        properties.load(this.class.getResourceAsStream("/application.properties"))
+
+
+        def xml = this.class.getResourceAsStream("/keycloak-example.xml").text
+        def file = Files.createTempFile("keycloak", ".xml").toFile()
+        file.text = xml
+        properties.setProperty("org.bonitasoft.keycloak", file.getAbsolutePath())
+
+        File props=Files.createTempFile("props",".properties").toFile()
+        def stream = new FileOutputStream(props)
+        properties.store(stream,"")
+
+        String[] args = ["-p",props.getAbsolutePath()]
+
+        when:
+        App.main(args)
+
+        then:
+        true
     }
 }

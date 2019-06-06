@@ -8,7 +8,6 @@
         forceAuthentication="false"
         isPassive="false"
         turnOffChangeSessionIdOnLogin="false">
-<!--        autodetectBearerOnly="false">-->
         <Keys>
             <Key signing="true">
                 <KeyStore resource="/WEB-INF/keystore.jks" password="store123">
