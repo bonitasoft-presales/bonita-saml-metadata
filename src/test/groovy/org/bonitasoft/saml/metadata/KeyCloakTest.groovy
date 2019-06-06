@@ -1,4 +1,4 @@
-package keycloak.saml.metadata
+package org.bonitasoft.saml.metadata
 
 import spock.lang.Specification
 import spock.lang.Unroll

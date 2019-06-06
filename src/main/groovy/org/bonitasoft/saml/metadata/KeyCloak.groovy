@@ -1,10 +1,7 @@
-package keycloak.saml.metadata
+package org.bonitasoft.saml.metadata
 
 import com.onelogin.saml2.settings.Metadata
 import com.onelogin.saml2.settings.SettingsBuilder
-import lombok.Builder
-import lombok.Data
-import lombok.NonNull
 
 import java.security.KeyStore
 
