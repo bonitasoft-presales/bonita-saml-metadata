@@ -14,9 +14,7 @@ class SamlModel {
     String nameIdPolicyFormat
     String signingCerts
 
-    //idp
     URL idpSingleSignOnServiceBindingUrl
-//    URL idpSingleSignOnServiceRequestBinding
 
     SamlModel(String xmlContent, String endPoint) {
 
@@ -28,8 +26,6 @@ class SamlModel {
         this.assertionEndPoint = new URL("${endPoint}/saml")
         this.logoutEndpoint = new URL("${endPoint}/samlLogout")
 
-//        this.idpSingleSignOnServiceBindingUrl=sp.IDP.SingleSignOnService.@bindingUrl
-//        this.idpSingleSignOnServiceRequestBinding=sp.IDP.SingleSignOnService.@requestBinding
         this.idpSingleSignOnServiceBindingUrl = new URL(sp.IDP.SingleSignOnService.@bindingUrl as String)
 
 

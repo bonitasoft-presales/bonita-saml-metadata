@@ -2,13 +2,12 @@ package keycloak.saml.metadata
 
 import com.onelogin.saml2.settings.Metadata
 import com.onelogin.saml2.settings.SettingsBuilder
-import sun.rmi.rmic.Constants
 
 import static com.onelogin.saml2.util.Constants.*
 
 class KeyCloak {
 
-    def fromModel(SamlModel samlModel) {
+    def generateMetadata(SamlModel samlModel) {
 
         SettingsBuilder settingsBuilder = new SettingsBuilder()
         def settings = settingsBuilder.fromFile("saml2.properties")
@@ -19,7 +18,6 @@ class KeyCloak {
         settings.spSingleLogoutServiceUrl = samlModel.logoutEndpoint
         settings.spNameIDFormat = samlModel.nameIdPolicyFormat
 
-//        onelogin.saml2.idp.single_sign_on_service.url
         settings.idpSingleSignOnServiceUrl = samlModel.idpSingleSignOnServiceBindingUrl
         settings.getSPMetadata()
 
@@ -40,8 +38,6 @@ class KeyCloak {
     def getModel(String xmlFileName, String endPoint) {
         def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
         new SamlModel(xmlContent, endPoint)
-//        String xmlFile
-//        FindFile.findFile("/keycloak-saml.xml")
     }
 
 
