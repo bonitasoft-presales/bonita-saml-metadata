@@ -26,7 +26,7 @@ class KeyCloak {
         def destFile = samlProperties.get("org.bonitasoft.metadata.dest_file")
         def certAlias = samlProperties.get("org.bonitasoft.keystore.cert_alias")
         def certPassword = samlProperties.get("org.bonitasoft.keystore.cert_password")
-        def generateKeyStore = samlProperties.get("org.bonitasoft.keystore.generate")
+        def generateKeyStore = Boolean.parseBoolean(samlProperties.get("org.bonitasoft.keystore.generate"))
         def hostname = samlProperties.get("org.bonitasoft.hostname")
 
         Node rootNode = samlModel.rootNode

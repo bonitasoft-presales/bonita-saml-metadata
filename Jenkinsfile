@@ -17,7 +17,9 @@ ansiColor('xterm') {
         }
 
         stage('Archive') {
-             archiveArtifacts artifacts: "build/distributions/*.zip, build/reports/tests/test/index.html", allowEmptyArchive: true, flatten:true
+             archiveArtifacts   artifacts: "build/distributions/*.zip, build/reports/tests/test/index.html, build/distributions/**/*.xml",
+                                allowEmptyArchive: true,
+                                flatten:true
 
         }
     }
