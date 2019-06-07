@@ -40,6 +40,6 @@ class KeyCloakTest extends Specification {
         xmlContent != null
 
         where:
-        xmlFile << ["keycloak-example.xml"]
+        xmlFile << ["keycloak-example-keys.xml"]
     }
 }

@@ -11,9 +11,28 @@
  * program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301, USA.
  **/
-package org.bonitasoft.saml.metadata;
+package org.bonitasoft.saml.metadata; /**
+                                       * Copyright (C) 2019 Bonitasoft S.A.
+                                       * Bonitasoft, 32 rue Gustave Eiffel - 38000 Grenoble
+                                       * This library is free software; you can redistribute it and/or modify it under
+                                       * the terms
+                                       * of the GNU Lesser General Public License as published by the Free Software
+                                       * Foundation
+                                       * version 2.1 of the License.
+                                       * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+                                       * WARRANTY;
+                                       * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+                                       * PARTICULAR PURPOSE.
+                                       * See the GNU Lesser General Public License for more details.
+                                       * You should have received a copy of the GNU Lesser General Public License along
+                                       * with this
+                                       * program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+                                       * Street, Fifth
+                                       * Floor, Boston, MA 02110-1301, USA.
+                                       **/
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -25,6 +44,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -34,6 +54,8 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -117,6 +139,33 @@ public class CertificateGenerator {
         KeyStore keyStore = KeyStore.getInstance("JKS");
         keyStore.load(null, null);//init new keystore
         return keyStore;
+    }
+
+    public static X509Certificate convertToX509Certificate(String pem) throws IOException, CertificateException {
+        if (pem.trim().length() == 0) {
+            return null;
+        }
+        X509CertificateHolder x509CertificateHolder;
+        StringReader reader = new StringReader(pem);
+        PEMParser pemParser = new PEMParser(reader);
+        x509CertificateHolder = (X509CertificateHolder) pemParser.readObject();
+        JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
+        converter.setProvider(new BouncyCastleProvider());
+        return converter.getCertificate(x509CertificateHolder);
+    }
+
+    public static PrivateKey convertToPrivateKey(String pem) throws IOException {
+        if (pem.trim().length() == 0) {
+            return null;
+        }
+
+        PrivateKeyInfo privateKeyInfo;
+        StringReader reader = new StringReader(pem);
+        PEMParser pemParser = new PEMParser(reader);
+        privateKeyInfo = (PrivateKeyInfo) pemParser.readObject();
+        JcaPEMKeyConverter jcaPEMKeyConverter = new JcaPEMKeyConverter();
+        jcaPEMKeyConverter.getPrivateKey(privateKeyInfo);
+        return jcaPEMKeyConverter.getPrivateKey(privateKeyInfo);
     }
 
 }

@@ -13,6 +13,8 @@
  **/
 package org.bonitasoft.saml.metadata
 
+import groovy.util.slurpersupport.GPathResult
+import groovy.xml.XmlUtil
 import lombok.Data
 
 @Data
@@ -29,17 +31,19 @@ class SamlModel {
 
     URL idpSingleSignOnServiceBindingUrl
 
+    Node rootNode
+
     SamlModel(String xmlContent, String endPoint) {
 
 
-        def rootNode = new XmlSlurper().parseText(xmlContent)
+        rootNode = new XmlParser().parseText(xmlContent)
 
         def sp = rootNode.SP
         this.entityId = sp.@entityID
         this.assertionEndPoint = new URL("${endPoint}/saml")
         this.logoutEndpoint = new URL("${endPoint}/samlLogout")
 
-        this.idpSingleSignOnServiceBindingUrl = new URL(sp.IDP.SingleSignOnService.@bindingUrl as String)
+        //this.idpSingleSignOnServiceBindingUrl = new URL(sp.IDP.SingleSignOnService.@bindingUrl)
 
 
         this.nameIdPolicyFormat = sp.PrincipalNameMapping.@attribute

@@ -9,12 +9,31 @@
             <Key signing="true" encryption="true">
                 <PrivateKeyPem>
                     -----BEGIN PRIVATE KEY-----
-                    [...]
+                    MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAJcKtkwglyYNw884ev3Uk+xcAWGOUZ6mxpzCNzm74o
+                    lSNWUYKcqpBlahrgb05gREKc7fVCNtoxxuSEF7+1oM+Ziu7s7de4+Ruk6zlf5/M+qAI0rfd+yuawR35N8zuSBksqX5
+                    U+GFuBPGu4ullhJWZpeVW00+vD0Q08e92FAIYq0LAgMBAAECgYEAkkCyImbQVO2xM98J4O1NSuoQAEnRqKDu4m2BEi
+                    tnAPcUcs6B8RXX6Fzn6R6L94eVQBaqHyATd/0lhBssWJcFuxd8cfisz2rRh/DPY+ydf+RreNjKNjlIJJ4jMiOFkVPa
+                    OrXoaF/IzFmhEyZqEktGqpUzpkpJg06VCVcU0Ey2PEkCQQD0sr8fUYRS1W5vG5YtDpVVa930pfaccLHBXOkTyc7uGd
+                    vVDonXoKrhWgEuekwAegoLWIwdWHMBdXIf8n7OsGh1AkEAngSYRLboAmH7iFi2NAWAZ5kB2/djuSEacsJLHL67a9f9
+                    VoDFkGuBCtwxz1VYuUOQokAwEH3jNU7Nr/IXbcAPfwJAOJeidibPOK0d9lpl+BO4W+IvmiZMC9BQfAz15tq0ngKjAf
+                    pzzMfe3XGIdmxYaX/QFOGsvhi3uG2mMFdQFpNcBQJBAJ1vOIIltaxCEQh8UjQsUw1kbWzJ4wpcx+wUVh+yjCrbTCW2
+                    MKA965h1YA8RGk+i2GQ/DWQw+IFxHQ8yZVNMamMCQQC6+e2lQmqjsMzwFSD3M7V3SUryRjUNC48HCy+c34YlZ0D8mL
+                    7P9eANsGHdue4MnnTbEzeEWwkFWk11abZBChyS
+
                     -----END PRIVATE KEY-----
                 </PrivateKeyPem>
                 <CertificatePem>
                     -----BEGIN CERTIFICATE-----
-                    [...]
+                    MIICLTCCAZagAwIBAgIVAIl9v+QFdmyQVFQ/0TZ5xka0vuiGMA0GCSqGSIb3DQEBCwUAMBUxEzARBgNVBAMMCmxvY2
+                    FsaG9oc3QwHhcNMTkwNjA3MDAwMDAwWhcNMjAwNjA2MDAwMDAwWjAVMRMwEQYDVQQDDApsb2NhbGhvaHN0MIGfMA0G
+                    CSqGSIb3DQEBAQUAA4GNADCBiQKBgQCXCrZMIJcmDcPPOHr91JPsXAFhjlGepsacwjc5u+KJUjVlGCnKqQZWoa4G9O
+                    YERCnO31QjbaMcbkhBe/taDPmYru7O3XuPkbpOs5X+fzPqgCNK33fsrmsEd+TfM7kgZLKl+VPhhbgTxruLpZYSVmaX
+                    lVtNPrw9ENPHvdhQCGKtCwIDAQABo3kwdzAbBgNVHQ4EFL5z84+vwf9BTp2z9GtYfCesb19/MBsGA1UdIwQUvnPzj6
+                    /B/0FOnbP0a1h8J6xvX38wDwYDVR0TAQH/BAUwAwEB/zALBgNVHQ8EBAMCAoQwHQYDVR0lBBYwFAYIKwYBBQUHAwEG
+                    CCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4GBAIHoDLHXwbE5kuiShhe3AgEoY0szn56VThrTbjnF6tySL2Oakzgfkc
+                    KFaR0yV2AeauUM9ie10Chy1Wz3zsx03V5juFRQ0bcp6hSWwIyyzkE7PfVzqFUkxLrD4qAsU5d5YOhFElrtVz1aGms8
+                    tZPpay+6IS8Ijv0gTpKCq0gtZjJK
+
                     -----END CERTIFICATE-----
                 </CertificatePem>
             </Key>
@@ -40,7 +59,16 @@
                 <Key signing="true">
                     <CertificatePem>
                         -----BEGIN CERTIFICATE-----
-                        [...]
+                        MIICLDCCAZWgAwIBAgIUdgYcPmghyMenrLkPRXjY0InAHDIwDQYJKoZIhvcNAQELBQAwFTETMBEGA1UEAwwKbG
+                        9jYWxob2hzdDAeFw0xOTA2MDcwMDAwMDBaFw0yMDA2MDYwMDAwMDBaMBUxEzARBgNVBAMMCmxvY2FsaG9oc3Qw
+                        gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAN5Ub4dcUGWI4TGK8YPqIyxUuHlkyP+mFf7LV9gmyp1FhuIgdC
+                        fe9SpAUfpcf62XTy0emacIZUHSuCs4eprcen4YHJcSBNfOtmfYOrDjGtu45f5T5Q8uuDuGxizbxqll8Cid27Ul
+                        ewrUmG84n+V+LHR5vFHyNMXD+pW3gdDlp+klAgMBAAGjeTB3MBsGA1UdDgQUMO92rn3+q4Cb6KtFA3JMo6y5gG
+                        8wGwYDVR0jBBQw73auff6rgJvoq0UDckyjrLmAbzAPBgNVHRMBAf8EBTADAQH/MAsGA1UdDwQEAwIChDAdBgNV
+                        HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADgYEAbYC0PPLL+/JA0TXoNtyZ6y4CAe
+                        gSk4yIIAsPD6lArcfydqlLTocaF+zhq0a627vAOm10DjXtDg1hknd2lGr1i/+hQeppYC2hUCixUvLrhnFu5Fl1
+                        Z0L3jojyRylQJzDx9cEtZkajFJNo44kKo50y9q3Bi+i8H4ld+ixsviSqRhM=
+
                         -----END CERTIFICATE-----
                     </CertificatePem>
                 </Key>

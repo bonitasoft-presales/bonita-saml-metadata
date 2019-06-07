@@ -29,15 +29,25 @@ class KeyCloak {
         def generateKeyStore = samlProperties.get("org.bonitasoft.keystore.generate")
         def hostname = samlProperties.get("org.bonitasoft.hostname")
 
+        Node rootNode = samlModel.rootNode
+
+        //SP certificate
+        setSamlProperty(samlProperties, "onelogin.saml2.sp.x509cert", rootNode.SP.Keys.Key.CertificatePem.text())
+        setSamlProperty(samlProperties, "onelogin.saml2.sp.privatekey", rootNode.SP.Keys.Key.PrivateKeyPem.text())
+
+
         SettingsBuilder settingsBuilder = new SettingsBuilder()
+
+
+        settingsBuilder
         def settings = settingsBuilder.fromProperties(samlProperties).build()
 
-        settings.spEntityId = samlModel.entityId
+        settings.spEntityId = rootNode.SP.@entityID[0]
         settings.spAssertionConsumerServiceUrl = samlModel.assertionEndPoint
-        settings.spSingleLogoutServiceUrl = samlModel.logoutEndpoint
-        settings.spNameIDFormat = samlModel.nameIdPolicyFormat
+        //settings.spSingleLogoutServiceUrl = samlModel.logoutEndpoint
+        settings.spNameIDFormat = rootNode.SP.@nameIDPolicyFormat[0]
 
-        settings.idpSingleSignOnServiceUrl = samlModel.idpSingleSignOnServiceBindingUrl
+
 
         def result = settings.getSPMetadata()
 
@@ -57,9 +67,17 @@ class KeyCloak {
         file.text = result
     }
 
+    def setSamlProperty(Properties samlProperties, String propertyName, String keycloakProperty) {
+        if (keycloakProperty != null) {
+            samlProperties.put(propertyName, keycloakProperty)
+        }
+    }
+
 
     def getModel(String xmlFileName, String endPoint) {
         def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
         new SamlModel(xmlContent, endPoint)
     }
+
+
 }
