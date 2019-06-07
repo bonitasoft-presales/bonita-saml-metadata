@@ -1,12 +1,17 @@
-/*
- * Copyright (C) 2018 Bonitasoft S.A.
- * Bonitasoft is a trademark of Bonitasoft SA.
- * This software file is BONITASOFT CONFIDENTIAL. Not For Distribution.
- * For commercial licensing information, contact:
+/**
+ * Copyright (C) 2019 Bonitasoft S.A.
  * Bonitasoft, 32 rue Gustave Eiffel - 38000 Grenoble
- * or Bonitasoft US, 51 Federal Street, Suite 305, San Francisco, CA 94107
- */
-package keycloak.saml.metadata;
+ * This library is free software; you can redistribute it and/or modify it under the terms
+ * of the GNU Lesser General Public License as published by the Free Software Foundation
+ * version 2.1 of the License.
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License along with this
+ * program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+ * Floor, Boston, MA 02110-1301, USA.
+ **/
+package org.bonitasoft.saml.metadata;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -61,7 +66,7 @@ public class CertificateGenerator {
     }
 
     private static X509Certificate generateSelfSignedCertificate(String host, int validityInDays, SecureRandom random,
-                                                                 KeyPair keypair) throws IOException, OperatorCreationException, CertificateException {
+            KeyPair keypair) throws IOException, OperatorCreationException, CertificateException {
         // fill in certificate fields
         X500Name subject = new X500NameBuilder(BCStyle.INSTANCE)
                 .addRDN(BCStyle.CN, host)
@@ -86,7 +91,7 @@ public class CertificateGenerator {
                 constraints.getEncoded());
         KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature);
         certificate.addExtension(Extension.keyUsage, false, usage.getEncoded());
-        ExtendedKeyUsage usageEx = new ExtendedKeyUsage(new KeyPurposeId[]{
+        ExtendedKeyUsage usageEx = new ExtendedKeyUsage(new KeyPurposeId[] {
                 KeyPurposeId.id_kp_serverAuth,
                 KeyPurposeId.id_kp_clientAuth
         });
@@ -104,7 +109,7 @@ public class CertificateGenerator {
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
         converter.setProvider(new
 
-                BouncyCastleProvider());
+        BouncyCastleProvider());
         return converter.getCertificate(holder);
     }
 

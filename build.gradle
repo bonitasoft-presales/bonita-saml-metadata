@@ -12,6 +12,8 @@ plugins {
 
     // Apply the application plugin to add support for building an application
     id 'application'
+
+    id "com.bonitasoft.gradle.bonita-formatting" version "0.1.43"
 }
 
 sourceCompatibility = 1.8
@@ -54,4 +56,4 @@ distributions {
 
 
 // Define the main class for the application
-mainClassName = 'keycloak.saml.metadata.App'
+mainClassName = 'org.bonitasoft.saml.metadata.App'
