@@ -56,4 +56,4 @@ distributions {
 
 
 // Define the main class for the application
-mainClassName = 'keycloak.saml.metadata.App'
+mainClassName = 'org.bonitasoft.saml.metadata.App'
