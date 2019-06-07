@@ -5,6 +5,6 @@
 build
 
 .idea
-.iml
+*.iml
 
 out
