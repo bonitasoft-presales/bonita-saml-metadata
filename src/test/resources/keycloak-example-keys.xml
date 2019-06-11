@@ -1,0 +1,48 @@
+<keycloak-saml-adapter>
+    <SP entityID="http://xxxxxxx"
+        sslPolicy="ALL"
+        nameIDPolicyFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        forceAuthentication="false"
+        isPassive="false"
+        turnOffChangeSessionIdOnLogin="true">
+        <Keys>
+            <Key signing="true" encryption="true">
+                <PrivateKeyPem>
+                    -----BEGIN PRIVATE KEY-----
+                    MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIzzpWjDMm6Huie27QaLByzeq264/J8AVVtTY6rYEwmGK6uQt3Y+YIkjGRzjfK8QChqGNIQgu7bE2PtFpi7uVwNx7frvhoml4iZMvgGRce474bBhkJKiFEtJmHnIWTBvbtDa2yt3dqe6dzIpClW3YBdLDpRz4auZzMme2YEUJfeRAgMBAAECgYBfaHjZfe9AI/1c7pRobmkP9TVjgDH3Spl8dOis9w+Dzd73hcC5eCWODkTsagu20AuWwqr/mMyXPY2GIDIJ6GjatMc/B8wc85v0s4YRPFB18eVpJNp/x0s8n1l1Jn79v5w1yDtDSSfhamzSdj4udjLXIzrIkzNxPcct9/z7eSs7RQJBAOgZTCNU2DNgyrikbkhAXtwfp2LhkDT3NO64Wr6gSWCcWGkuIVG7Iyq50PcgoJHqnm+c5gZeJGC+GQEFjQfIWR8CQQCbd3wkGDpYObd/1v+khkquhx1bzcsRW3WASY6p2zngoHm4/dzrP/j1G985TrLsH7cui2cxVGO1OGE/z04c46lPAkBsPRfvxiqJU1NW5n/zu+lBGJX0HCMnQD30Mg9HpPJzVpY4fuXU+sO8silMhm+7fMHkZTQ0tgSbBSwd+Nu7TGibAkAhP6yNC6FuvOlBrfl+djoCmWLt/1UuoSDADvsz2G7IW4msxp44sbXMtelHmE0rspy6l5W6NxIb77LcsrlB9G6BAkEAtFGnAcld+mMz1bH7B3eazN5mGPxxy2e3xKZTwvJ/sxfxSVRnmUCf4M3YKkEP2AJVt8p7yIXAOucbpoqtyT11Vw==
+                    -----BEGIN PRIVATE KEY-----
+                </PrivateKeyPem>
+                <CertificatePem>
+                    -----BEGIN CERTIFICATE-----
+                    MIICLTCCAZagAwIBAgIVAKxgKaFfJtBGZpCiYXhgadV+0IsYMA0GCSqGSIb3DQEBCwUAMBUxEzARBgNVBAMMCmxvY2FsaG9oc3QwHhcNMTkwNjA3MDAwMDAwWhcNMjAwNjA2MDAwMDAwWjAVMRMwEQYDVQQDDApsb2NhbGhvaHN0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCM86VowzJuh7ontu0Giwcs3qtuuPyfAFVbU2Oq2BMJhiurkLd2PmCJIxkc43yvEAoahjSEILu2xNj7RaYu7lcDce3674aJpeImTL4BkXHuO+GwYZCSohRLSZh5yFkwb27Q2tsrd3anuncyKQpVt2AXSw6Uc+GrmczJntmBFCX3kQIDAQABo3kwdzAbBgNVHQ4EFMS0tkOF86fwPNZ9TUgWEV2k+YmHMBsGA1UdIwQUxLS2Q4Xzp/A81n1NSBYRXaT5iYcwDwYDVR0TAQH/BAUwAwEB/zALBgNVHQ8EBAMCAoQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4GBAFudLS5cqe1NdYBc0d8INDe1Z69cmEjSI/S4OJPvNx6qKr5tUO9bKdiyZCr4z5LPreN9ci+60wtXHXQLwZJSdnLY/ZxVFvNLpXVVXS83N4Dz00r7m3dKP+CTuRpv/JUopihdB6ARorBVt1HMvb1/N7aJ1DwywnJPupx1OCsh30b/
+                    -----BEGIN CERTIFICATE-----
+                </CertificatePem>
+            </Key>
+        </Keys>
+        <PrincipalNameMapping policy="FROM_ATTRIBUTE" attribute="Login"/>
+        <IDP entityID="https://xxxxxxx-xxxxxx.fr/xxxxx"
+             signaturesRequired="true"
+             signatureAlgorithm="RSA_SHA256">
+            <SingleSignOnService signRequest="true"
+                                 validateResponseSignature="true"
+                                 requestBinding="POST"
+                                 responseBinding="POST"
+                                 bindingUrl="https://xxxxxxx-xxxxxx.fr/xxx/xx/xx/SAML2/POST/SSO"/>
+            <SingleLogoutService signRequest="true"
+                                 signResponse="true"
+                                 validateRequestSignature="true"
+                                 validateResponseSignature="true"
+                                 requestBinding="POST"
+                                 responseBinding="POST"
+                                 postBindingUrl="https://xxxxxxx-xxxxxx.fr/xxx/xx/xx/SAML2/POST/SLO"
+                                 redirectBindingUrl="https://xxxxxxx-xxxxxx.fr/xxx/xx/xx/SAML2/Redirect/SLO"/>
+            <Keys>
+                <Key signing="true">
+                    <CertificatePem>
+                        MIICLTCCAZagAwIBAgIVAKxgKaFfJtBGZpCiYXhgadV+0IsYMA0GCSqGSIb3DQEBCwUAMBUxEzARBgNVBAMMCmxvY2FsaG9oc3QwHhcNMTkwNjA3MDAwMDAwWhcNMjAwNjA2MDAwMDAwWjAVMRMwEQYDVQQDDApsb2NhbGhvaHN0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCM86VowzJuh7ontu0Giwcs3qtuuPyfAFVbU2Oq2BMJhiurkLd2PmCJIxkc43yvEAoahjSEILu2xNj7RaYu7lcDce3674aJpeImTL4BkXHuO+GwYZCSohRLSZh5yFkwb27Q2tsrd3anuncyKQpVt2AXSw6Uc+GrmczJntmBFCX3kQIDAQABo3kwdzAbBgNVHQ4EFMS0tkOF86fwPNZ9TUgWEV2k+YmHMBsGA1UdIwQUxLS2Q4Xzp/A81n1NSBYRXaT5iYcwDwYDVR0TAQH/BAUwAwEB/zALBgNVHQ8EBAMCAoQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4GBAFudLS5cqe1NdYBc0d8INDe1Z69cmEjSI/S4OJPvNx6qKr5tUO9bKdiyZCr4z5LPreN9ci+60wtXHXQLwZJSdnLY/ZxVFvNLpXVVXS83N4Dz00r7m3dKP+CTuRpv/JUopihdB6ARorBVt1HMvb1/N7aJ1DwywnJPupx1OCsh30b/
+                    </CertificatePem>
+                </Key>
+            </Keys>
+        </IDP>
+    </SP>
+</keycloak-saml-adapter>
