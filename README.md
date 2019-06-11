@@ -1,7 +1,16 @@
+# Bonita SAML2 metadata
 
+this projects generates SAML2 xml metada file based on keycloak xml configuration file used by Bonita platform.
 
-https://bonitasoft.atlassian.net/wiki/spaces/BS/pages/123610451/SAML
+## Usage
 
-https://bonitasoft.atlassian.net/wiki/spaces/SUP/pages/129895600/How+to+Setup+an+SAML+IdP+with+Keycloak+server
+1. unzip distribution
+1. edit `application.properties` according to your needs
+1. run `bin/bonita-saml-metadata` (or `bonita-saml-metadata.bat` on windows)
+1. use generated file to configure your SAML2 IDP
 
-https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.0/html/securing_applications_and_services_guide/saml_2
+## Build project
+
+project uses a gradle wrapper
+
+run `./gradew clean build` (or `./gradlew.bat` on windows)
