@@ -49,7 +49,7 @@ class App {
         } catch (ParseException exp) {
             System.err.println("ERROR: error while parsing arguments " + exp.getMessage())
             HelpFormatter formatter = new HelpFormatter()
-            formatter.printHelp("keycloak-saml-metadata[.bat]", options)
+            formatter.printHelp("bonita-saml-metadata[.bat]", options)
             System.exit(1)
         }
     }
@@ -57,7 +57,7 @@ class App {
     private static void start(CommandLine cmd, Options options, String propertyFile) {
         if (cmd.hasOption("h")) {
             HelpFormatter formatter = new HelpFormatter()
-            formatter.printHelp("keycloak-saml-metadata[.bat]", options)
+            formatter.printHelp("bonita-saml-metadata[.bat]", options)
             System.exit(0)
         }
 
