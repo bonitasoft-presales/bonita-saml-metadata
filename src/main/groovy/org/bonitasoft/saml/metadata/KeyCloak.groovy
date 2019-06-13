@@ -15,28 +15,41 @@ package org.bonitasoft.saml.metadata
 
 import com.onelogin.saml2.settings.Metadata
 import com.onelogin.saml2.settings.SettingsBuilder
+import org.slf4j.Logger
 
 import java.security.KeyStore
+import java.time.Instant
 
 import static com.onelogin.saml2.util.Constants.*
 
 class KeyCloak {
 
-    def generateMetadata(SamlModel samlModel, Properties samlProperties) {
-        def destFile = samlProperties.get("org.bonitasoft.metadata.dest_file")
-        def certAlias = samlProperties.get("org.bonitasoft.keystore.cert_alias")
-        def certPassword = samlProperties.get("org.bonitasoft.keystore.cert_password")
-        def generateKeyStore = Boolean.parseBoolean(samlProperties.get("org.bonitasoft.keystore.generate"))
-        def hostname = samlProperties.get("org.bonitasoft.hostname")
+    private SamlModel samlModel
+    private Properties samlProperties
+    private Logger logger
+
+    public KeyCloak(SamlModel samlModel, Properties samlProperties, Logger logger){
+
+        this.logger = logger
+        this.samlProperties = samlProperties
+        this.samlModel = samlModel
+    }
+
+    def generateMetadata() {
+        Object destFile = getSamlProperty("org.bonitasoft.metadata.dest_file")
+        def certAlias = getSamlProperty("org.bonitasoft.keystore.cert_alias")
+        def certPassword = getSamlProperty("org.bonitasoft.keystore.cert_password",true)
+        def generateKeyStore = Boolean.parseBoolean(getSamlProperty("org.bonitasoft.keystore.generate"))
+        def hostname = getSamlProperty("org.bonitasoft.hostname")
+        def validUntil = getSamlProperty("org.bonitasoft.validUntil")
 
         Node rootNode = samlModel.rootNode
 
         //SP certificate
-        setSamlProperty(samlProperties, "onelogin.saml2.sp.x509cert", rootNode.SP.Keys.Key.CertificatePem.text())
-        setSamlProperty(samlProperties, "onelogin.saml2.sp.privatekey", rootNode.SP.Keys.Key.PrivateKeyPem.text())
+        setSamlProperty("onelogin.saml2.sp.x509cert", rootNode.SP.Keys.Key.CertificatePem.text())
+        setSamlProperty("onelogin.saml2.sp.privatekey", rootNode.SP.Keys.Key.PrivateKeyPem.text())
 
-
-        setSamlProperty(samlProperties, "onelogin.saml2.unique_id_prefix" ,"_")
+        setSamlProperty("onelogin.saml2.unique_id_prefix", "_")
 
 
         SettingsBuilder settingsBuilder = new SettingsBuilder()
@@ -51,12 +64,14 @@ class KeyCloak {
         settings.spNameIDFormat = rootNode.SP.@nameIDPolicyFormat[0]
 
 
-
-        def result = settings.getSPMetadata()
+        def now = Instant.parse(validUntil)
+        Calendar validUntilCalendar = now.toCalendar()
+        def cacheDuration=Integer.MAX_VALUE
+        def result = new Metadata(settings,validUntilCalendar,cacheDuration).getMetadataString()
 
         if (generateKeyStore) {
             KeyStore keyStore
-            Metadata metadata = new Metadata(settings)
+            Metadata metadata = new Metadata(settings,validUntilCalendar,cacheDuration)
             keyStore = CertificateGenerator.generateCertificate(hostname, 365, certPassword, certAlias)
             keyStore.getKey(certAlias, certPassword.toCharArray())
             def certificate = keyStore.getCertificate(certAlias)
@@ -70,7 +85,18 @@ class KeyCloak {
         file.text = result
     }
 
-    def setSamlProperty(Properties samlProperties, String propertyName, String keycloakProperty) {
+    private Object getSamlProperty(String propertyName,boolean quiet=false) {
+        def value = samlProperties.get(propertyName)
+        if (!quiet){
+            logger.debug("$propertyName = $value")
+        }else{
+            logger.debug("$propertyName = ***")
+        }
+
+        value
+    }
+
+    def setSamlProperty(String propertyName, String keycloakProperty) {
         if (keycloakProperty != null) {
             samlProperties.put(propertyName, keycloakProperty)
         }

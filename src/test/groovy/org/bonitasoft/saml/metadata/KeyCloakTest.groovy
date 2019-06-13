@@ -13,33 +13,56 @@
  **/
 package org.bonitasoft.saml.metadata
 
+import org.slf4j.Logger
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.nio.file.Files
 
 class KeyCloakTest extends Specification {
 
     KeyCloak keyCloak
 
-    def setup() {
-        keyCloak = new KeyCloak()
-    }
+    Logger logger= org.slf4j.LoggerFactory.getLogger(this.class)
 
 
     @Unroll
     def "should parse #xmlFile"(xmlFile) {
         given:
         def samlModel = keyCloak.getModel(xmlFile, "http://example.com:1234/bonita")
-        Properties properties=new Properties()
+        Properties properties = new Properties()
         properties.load(this.class.getResourceAsStream("/application.properties"))
-
+        keyCloak = new KeyCloak(samlModel,properties,logger)
 
         when:
-        def xmlContent = keyCloak.generateMetadata(samlModel,properties)
+        def xmlContent = keyCloak.generateMetadata()
 
         then:
         xmlContent != null
 
         where:
         xmlFile << ["keycloak-example-keys.xml"]
+    }
+
+    def "should handle validUntil attribute"() {
+        given:
+        def xmlFile = "./keycloak-example-keys.xml"
+        def xmlContent1 = new File(this.class.getResource("/${xmlFile}").file).text
+        def samlModel = new SamlModel(xmlContent1, "http://example.com:1234/bonita")
+        Properties properties = new Properties()
+        properties.load(this.class.getResourceAsStream("/application.properties"))
+        def tempFile = Files.createTempFile("metadata", "xml").toFile()
+        properties.setProperty("org.bonitasoft.metadata.dest_file", tempFile.getAbsolutePath())
+        properties.setProperty("org.bonitasoft.validUntil", "2050-12-31T15:20:09Z")
+        keyCloak = new KeyCloak(samlModel,properties,logger)
+
+        when:
+        def xmlContent = keyCloak.generateMetadata()
+
+        then:
+        def parsed = new XmlParser().parseText(xmlContent as String)
+        parsed.@validUntil == "2050-12-31T15:20:09Z"
+
+
     }
 }

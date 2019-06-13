@@ -19,6 +19,8 @@ import org.apache.commons.cli.DefaultParser
 import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
 import org.apache.commons.cli.ParseException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class App {
 
@@ -26,14 +28,15 @@ class App {
     public static final String PROPERTIES = "properties"
     public static final String HELP = "help"
 
-    String execute(Properties properties) {
-        def keyCloak = new KeyCloak()
 
+    String execute(Properties properties) {
+Logger logger= LoggerFactory.getLogger(this.class)
         def endpoint = properties.get("org.bonitasoft.endpoint")
         def xmlKeyCloak = new File(properties.get("org.bonitasoft.keycloak")).text
 
         def samlModel = new SamlModel(xmlKeyCloak, endpoint)
-        keyCloak.generateMetadata(samlModel, properties)
+        def keyCloak = new KeyCloak(samlModel,properties,logger)
+        keyCloak.generateMetadata()
     }
 
     static void main(String[] args) {
