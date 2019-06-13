@@ -29,8 +29,10 @@ class AppTest extends Specification {
 
         def xml = this.class.getResourceAsStream("/keycloak-example.xml").text
         def file = Files.createTempFile("keycloak", ".xml").toFile()
+        def destFile = Files.createTempFile("metadata", ".xml").toFile()
         file.text = xml
         properties.setProperty("org.bonitasoft.keycloak", file.getAbsolutePath())
+        properties.setProperty("org.bonitasoft.metadata.dest_file", destFile.getAbsolutePath())
 
         when:
         def result = app.execute(properties)
@@ -50,6 +52,8 @@ class AppTest extends Specification {
         def file = Files.createTempFile("keycloak", ".xml").toFile()
         file.text = xml
         properties.setProperty("org.bonitasoft.keycloak", file.getAbsolutePath())
+        def destFile = Files.createTempFile("metadata", ".xml").toFile()
+        properties.setProperty("org.bonitasoft.metadata.dest_file", destFile.getAbsolutePath())
 
         File props=Files.createTempFile("props",".properties").toFile()
         def stream = new FileOutputStream(props)

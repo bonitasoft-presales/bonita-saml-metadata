@@ -86,6 +86,9 @@ class KeyCloak {
     }
 
     private Object getSamlProperty(String propertyName,boolean quiet=false) {
+        if (!samlProperties.containsKey(propertyName)){
+            throw new IllegalArgumentException("Property $propertyName is not set. Set a valid value and retry.")
+        }
         def value = samlProperties.get(propertyName)
         if (!quiet){
             logger.debug("$propertyName = $value")

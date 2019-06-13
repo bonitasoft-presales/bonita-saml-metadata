@@ -30,7 +30,7 @@ class App {
 
 
     String execute(Properties properties) {
-Logger logger= LoggerFactory.getLogger(this.class)
+        Logger logger= LoggerFactory.getLogger(this.class)
         def endpoint = properties.get("org.bonitasoft.endpoint")
         def xmlKeyCloak = new File(properties.get("org.bonitasoft.keycloak")).text
 

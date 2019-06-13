@@ -28,9 +28,13 @@ class KeyCloakTest extends Specification {
 
     @Unroll
     def "should parse #xmlFile"(xmlFile) {
+        def xmlContent1 = new File(this.class.getResource("/${xmlFile}").file).text
         given:
-        def samlModel = keyCloak.getModel(xmlFile, "http://example.com:1234/bonita")
+        def samlModel = new SamlModel(xmlContent1, "http://example.com:1234/bonita")
         Properties properties = new Properties()
+        def tempFile = Files.createTempFile("metadata", "xml").toFile()
+        properties.setProperty("org.bonitasoft.metadata.dest_file", tempFile.getAbsolutePath())
+
         properties.load(this.class.getResourceAsStream("/application.properties"))
         keyCloak = new KeyCloak(samlModel,properties,logger)
 
@@ -62,7 +66,5 @@ class KeyCloakTest extends Specification {
         then:
         def parsed = new XmlParser().parseText(xmlContent as String)
         parsed.@validUntil == "2050-12-31T15:20:09Z"
-
-
     }
 }
