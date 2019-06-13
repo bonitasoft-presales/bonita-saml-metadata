@@ -18,6 +18,12 @@ import com.onelogin.saml2.settings.SettingsBuilder
 
 import java.security.KeyStore
 
+import static com.onelogin.saml2.settings.SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY
+import static com.onelogin.saml2.settings.SettingsBuilder.SP_ENTITYID_PROPERTY_KEY
+import static com.onelogin.saml2.settings.SettingsBuilder.SP_PRIVATEKEY_PROPERTY_KEY
+import static com.onelogin.saml2.settings.SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY
+import static com.onelogin.saml2.settings.SettingsBuilder.SP_X509CERT_PROPERTY_KEY
+import static com.onelogin.saml2.settings.SettingsBuilder.UNIQUE_ID_PREFIX_PROPERTY_KEY
 import static com.onelogin.saml2.util.Constants.*
 
 class KeyCloak {
@@ -29,15 +35,22 @@ class KeyCloak {
         def generateKeyStore = Boolean.parseBoolean(samlProperties.get("org.bonitasoft.keystore.generate"))
         def hostname = samlProperties.get("org.bonitasoft.hostname")
 
+
         Node rootNode = samlModel.rootNode
+        def x509CertificatePem = rootNode.SP.Keys.Key.CertificatePem.text()
+        def privateKeyPem = rootNode.SP.Keys.Key.PrivateKeyPem.text()
+        def nameIdFormat = rootNode.SP.@nameIDPolicyFormat[0]
+        def spEntityID = rootNode.SP.@entityID[0]
 
-        //SP certificate
-        setSamlProperty(samlProperties, "onelogin.saml2.sp.x509cert", rootNode.SP.Keys.Key.CertificatePem.text())
-        setSamlProperty(samlProperties, "onelogin.saml2.sp.privatekey", rootNode.SP.Keys.Key.PrivateKeyPem.text())
+        def assertionEndPoint = samlModel.assertionEndPoint
+        def logoutEndpoint = samlModel.logoutEndpoint
 
-
-        setSamlProperty(samlProperties, "onelogin.saml2.unique_id_prefix" ,"_")
-
+        setSamlProperty(samlProperties, SP_X509CERT_PROPERTY_KEY, x509CertificatePem)
+        setSamlProperty(samlProperties, SP_PRIVATEKEY_PROPERTY_KEY, privateKeyPem)
+        setSamlProperty(samlProperties,SP_ENTITYID_PROPERTY_KEY,spEntityID)
+        setSamlProperty(samlProperties,SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY,samlProperties.get("org.bonitasoft.assertion.endpoint"))
+        setSamlProperty(samlProperties,SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY,samlProperties.get("org.bonitasoft.logout.endpoint"))
+        setSamlProperty(samlProperties, UNIQUE_ID_PREFIX_PROPERTY_KEY ,"_")
 
         SettingsBuilder settingsBuilder = new SettingsBuilder()
 
@@ -45,10 +58,10 @@ class KeyCloak {
         settingsBuilder
         def settings = settingsBuilder.fromProperties(samlProperties).build()
 
-        settings.spEntityId = rootNode.SP.@entityID[0]
-        settings.spAssertionConsumerServiceUrl = samlModel.assertionEndPoint
-        //settings.spSingleLogoutServiceUrl = samlModel.logoutEndpoint
-        settings.spNameIDFormat = rootNode.SP.@nameIDPolicyFormat[0]
+        //settings.spEntityId = spEntityID
+        //settings.spAssertionConsumerServiceUrl = assertionEndPoint
+        //settings.spSingleLogoutServiceUrl = logoutEndpoint
+        //settings.spNameIDFormat = nameIdFormat
 
 
 
