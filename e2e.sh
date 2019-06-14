@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-./gradlew  check  distZip
+./gradlew clean check distZip
 unzip -q -o build/distributions/bonita-saml-metadata.zip -d build/distributions
 
 cp e2e/keycloack-saml.xml build/distributions/bonita-saml-metadata/keycloak-example.xml
@@ -13,8 +13,10 @@ ls -l
 # check help
 bin/bonita-saml-metadata --help
 
-# check help
+# check generate
 bin/bonita-saml-metadata --properties ./application-signed.properties
+
+# check signed generate
 bin/bonita-saml-metadata --properties ./application-not-signed.properties
 
 ls -l sp-metadata.xml

@@ -22,11 +22,11 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <encoder>
-            <pattern>%date %level %logger{20} %msg%n</pattern>
+            <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.bonitasoft.saml" level="INFO"/>
+    <logger name="org.bonitasoft.saml" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

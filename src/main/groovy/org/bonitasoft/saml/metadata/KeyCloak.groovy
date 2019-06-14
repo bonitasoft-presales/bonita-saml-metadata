@@ -15,28 +15,47 @@ package org.bonitasoft.saml.metadata
 
 import com.onelogin.saml2.settings.Metadata
 import com.onelogin.saml2.settings.SettingsBuilder
+import org.slf4j.Logger
 
 import java.security.KeyStore
+import java.time.Instant
 
 import static com.onelogin.saml2.util.Constants.*
 
 class KeyCloak {
 
-    def generateMetadata(SamlModel samlModel, Properties samlProperties) {
-        def destFile = samlProperties.get("org.bonitasoft.metadata.dest_file")
-        def certAlias = samlProperties.get("org.bonitasoft.keystore.cert_alias")
-        def certPassword = samlProperties.get("org.bonitasoft.keystore.cert_password")
-        def generateKeyStore = Boolean.parseBoolean(samlProperties.get("org.bonitasoft.keystore.generate"))
-        def hostname = samlProperties.get("org.bonitasoft.hostname")
+    private SamlModel samlModel
+    private Properties samlProperties
+    private Logger logger
+
+    KeyCloak(SamlModel samlModel, Properties samlProperties, Logger logger) {
+
+        this.logger = logger
+        this.samlProperties = samlProperties
+        this.samlModel = samlModel
+    }
+
+    def generateMetadata() {
+        def destFile = getSamlProperty("org.bonitasoft.metadata.dest_file")
+        def generateKeyStore = Boolean.parseBoolean(getSamlProperty("org.bonitasoft.keystore.generate"))
+        def certAlias
+        def certPassword
+        def hostname
+        if (generateKeyStore) {
+            certAlias = getSamlProperty("org.bonitasoft.keystore.cert_alias")
+            certPassword = getSamlProperty("org.bonitasoft.keystore.cert_password", true)
+            hostname = getSamlProperty("org.bonitasoft.hostname")
+        }
+
+        def validUntil = getSamlProperty("org.bonitasoft.validUntil")
 
         Node rootNode = samlModel.rootNode
 
         //SP certificate
-        setSamlProperty(samlProperties, "onelogin.saml2.sp.x509cert", rootNode.SP.Keys.Key.CertificatePem.text())
-        setSamlProperty(samlProperties, "onelogin.saml2.sp.privatekey", rootNode.SP.Keys.Key.PrivateKeyPem.text())
+        setSamlProperty("onelogin.saml2.sp.x509cert", rootNode.SP.Keys.Key.CertificatePem.text())
+        setSamlProperty("onelogin.saml2.sp.privatekey", rootNode.SP.Keys.Key.PrivateKeyPem.text())
 
-
-        setSamlProperty(samlProperties, "onelogin.saml2.unique_id_prefix" ,"_")
+        setSamlProperty("onelogin.saml2.unique_id_prefix", "_")
 
 
         SettingsBuilder settingsBuilder = new SettingsBuilder()
@@ -47,40 +66,52 @@ class KeyCloak {
 
         settings.spEntityId = rootNode.SP.@entityID[0]
         settings.spAssertionConsumerServiceUrl = samlModel.assertionEndPoint
-        //settings.spSingleLogoutServiceUrl = samlModel.logoutEndpoint
         settings.spNameIDFormat = rootNode.SP.@nameIDPolicyFormat[0]
 
 
-
-        def result = settings.getSPMetadata()
+        def now = Instant.parse(validUntil)
+        Calendar validUntilCalendar = now.toCalendar()
+        def cacheDuration = Integer.MAX_VALUE
+        Metadata metadata = new Metadata(settings, validUntilCalendar, cacheDuration)
+        def spMetadata = metadata.getMetadataString()
 
         if (generateKeyStore) {
-            KeyStore keyStore
-            Metadata metadata = new Metadata(settings)
-            keyStore = CertificateGenerator.generateCertificate(hostname, 365, certPassword, certAlias)
-            keyStore.getKey(certAlias, certPassword.toCharArray())
+            KeyStore keyStore = CertificateGenerator.generateCertificate(hostname, 365, certPassword, certAlias)
             def certificate = keyStore.getCertificate(certAlias)
-            result = metadata.signMetadata(metadata.metadataString, keyStore.getKey(certAlias, certPassword.toCharArray()), certificate, RSA_SHA256, SHA256)
+            spMetadata = metadata.signMetadata(metadata.metadataString, keyStore.getKey(certAlias, certPassword.toCharArray()), certificate, RSA_SHA256, SHA256)
         }
         def file = new File(destFile as String)
         if (!file.exists()) {
             file.createNewFile()
         }
-        println("generating file ${file.getAbsolutePath()}")
-        file.text = result
+        logger.info("generating file ${file.getAbsolutePath()}")
+        file.text = spMetadata
     }
 
-    def setSamlProperty(Properties samlProperties, String propertyName, String keycloakProperty) {
+    private Object getSamlProperty(String propertyName, boolean quiet = false) {
+        if (!samlProperties.containsKey(propertyName)) {
+            throw new IllegalArgumentException("Property $propertyName is not set. Set a valid value and retry.")
+        }
+        def value = samlProperties.get(propertyName)
+        def display = value
+        if (quiet) {
+            display = "*******"
+        }
+        logger.info("using property [$propertyName=$display]")
+        value
+    }
+
+    def setSamlProperty(String propertyName, String keycloakProperty) {
         if (keycloakProperty != null) {
             samlProperties.put(propertyName, keycloakProperty)
         }
     }
 
 
-    def getModel(String xmlFileName, String endPoint) {
-        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
-        new SamlModel(xmlContent, endPoint)
-    }
+    //    def getModel(String xmlFileName, String endPoint) {
+    //        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
+    //        new SamlModel(xmlContent, endPoint)
+    //    }
 
 
 }

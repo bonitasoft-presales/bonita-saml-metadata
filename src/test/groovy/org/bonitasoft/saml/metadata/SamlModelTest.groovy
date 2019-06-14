@@ -15,16 +15,17 @@ package org.bonitasoft.saml.metadata
 
 import spock.lang.Specification
 
-class SamlModelTest extends Specification {
+class SamlModelTest extends Specification implements SamlTestHelper{
+
 
     def "should read certificate value from #xmlFileName"(xmlFileName) {
         given:
-        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
+        def xmlContent = getXmlResourceContent(xmlFileName)
         SamlModel samlModel = new SamlModel(xmlContent, "http://localhost:1234/bonita")
 
         when:
         Node node = samlModel.rootNode
-        def value= node.SP.Keys.Key.CertificatePem.text()
+        def value = node.SP.Keys.Key.CertificatePem.text()
 
         then:
         value.contains "MIICLTCCAZagAwIBAgIVAKxgKaFfJtBGZpCiYXh"
@@ -33,17 +34,19 @@ class SamlModelTest extends Specification {
         xmlFileName << ["keycloak-example-keys.xml"]
     }
 
+
+
     def "should read attribute value from #xmlFileName"(xmlFileName) {
         given:
-        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
+        def xmlContent = getXmlResourceContent(xmlFileName)
         SamlModel samlModel = new SamlModel(xmlContent, "http://localhost:1234/bonita")
 
         when:
         Node node = samlModel.rootNode
-        def value= node.SP.PrincipalNameMapping.@policy[0]
+        def value = node.SP.PrincipalNameMapping.@policy[0]
 
         then:
-        value=="FROM_ATTRIBUTE"
+        value == "FROM_ATTRIBUTE"
 
         where:
         xmlFileName << ["keycloak-example-keys.xml"]
