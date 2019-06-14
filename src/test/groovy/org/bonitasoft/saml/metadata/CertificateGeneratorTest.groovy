@@ -14,6 +14,7 @@
 package org.bonitasoft.saml.metadata
 
 import org.bouncycastle.util.encoders.Base64
+import org.slf4j.Logger
 import spock.lang.Specification
 import spock.lang.Unroll
 import sun.security.provider.X509Factory
@@ -21,6 +22,8 @@ import sun.security.provider.X509Factory
 import java.security.KeyStore
 
 class CertificateGeneratorTest extends Specification {
+
+    Logger logger= org.slf4j.LoggerFactory.getLogger(this.class)
 
     @Unroll
     def "random certificate for alias #alias ans password #secret"(String secret,String alias) {
@@ -36,7 +39,7 @@ class CertificateGeneratorTest extends Specification {
         then:
         encodedKey != null
         encodedCertificate != null
-        println("""
+        logger.info("""
 
 alias: $alias
 password: $secret

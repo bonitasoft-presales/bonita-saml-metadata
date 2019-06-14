@@ -28,14 +28,15 @@ class App {
     public static final String PROPERTIES = "properties"
     public static final String HELP = "help"
 
+    public static final Logger logger = LoggerFactory.getLogger(App.class)
 
     String execute(Properties properties) {
-        Logger logger= LoggerFactory.getLogger(this.class)
+
         def endpoint = properties.get("org.bonitasoft.endpoint")
         def xmlKeyCloak = new File(properties.get("org.bonitasoft.keycloak")).text
 
         def samlModel = new SamlModel(xmlKeyCloak, endpoint)
-        def keyCloak = new KeyCloak(samlModel,properties,logger)
+        def keyCloak = new KeyCloak(samlModel, properties, logger)
         keyCloak.generateMetadata()
     }
 
@@ -50,7 +51,7 @@ class App {
             def propertyFile = "./application.properties"
             start(cmd, options, propertyFile)
         } catch (ParseException exp) {
-            System.err.println("ERROR: error while parsing arguments " + exp.getMessage())
+            System.err.logger.info("ERROR: error while parsing arguments " + exp.getMessage())
             HelpFormatter formatter = new HelpFormatter()
             formatter.printHelp("bonita-saml-metadata[.bat]", options)
             System.exit(1)
@@ -72,12 +73,12 @@ class App {
         if (!file.exists()) {
             throw new IllegalArgumentException("file does not exists ${file.getAbsolutePath()}")
         } else {
-            println "using property file ${file.getAbsolutePath()}"
+            logger.info "using property file ${file.getAbsolutePath()}"
         }
         Properties properties = new Properties()
         file.withInputStream { properties.load(it) }
 
-        properties. load(new FileInputStream(file.getAbsolutePath()))
+        properties.load(new FileInputStream(file.getAbsolutePath()))
         new App().execute(properties)
     }
 

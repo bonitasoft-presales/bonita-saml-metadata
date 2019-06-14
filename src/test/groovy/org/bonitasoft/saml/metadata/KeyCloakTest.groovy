@@ -63,7 +63,7 @@ class KeyCloakTest extends Specification {
         when:
         def xmlContent = keyCloak.generateMetadata()
 
-        then:
+        then: 'valid until is in generrated file'
         def parsed = new XmlParser().parseText(xmlContent as String)
         parsed.@validUntil == "2050-12-31T15:20:09Z"
     }

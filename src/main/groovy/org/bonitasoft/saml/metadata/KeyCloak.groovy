@@ -28,7 +28,7 @@ class KeyCloak {
     private Properties samlProperties
     private Logger logger
 
-    public KeyCloak(SamlModel samlModel, Properties samlProperties, Logger logger){
+    KeyCloak(SamlModel samlModel, Properties samlProperties, Logger logger) {
 
         this.logger = logger
         this.samlProperties = samlProperties
@@ -36,11 +36,17 @@ class KeyCloak {
     }
 
     def generateMetadata() {
-        Object destFile = getSamlProperty("org.bonitasoft.metadata.dest_file")
-        def certAlias = getSamlProperty("org.bonitasoft.keystore.cert_alias")
-        def certPassword = getSamlProperty("org.bonitasoft.keystore.cert_password",true)
+        def destFile = getSamlProperty("org.bonitasoft.metadata.dest_file")
         def generateKeyStore = Boolean.parseBoolean(getSamlProperty("org.bonitasoft.keystore.generate"))
-        def hostname = getSamlProperty("org.bonitasoft.hostname")
+        def certAlias
+        def certPassword
+        def hostname
+        if (generateKeyStore) {
+            certAlias = getSamlProperty("org.bonitasoft.keystore.cert_alias")
+            certPassword = getSamlProperty("org.bonitasoft.keystore.cert_password", true)
+            hostname = getSamlProperty("org.bonitasoft.hostname")
+        }
+
         def validUntil = getSamlProperty("org.bonitasoft.validUntil")
 
         Node rootNode = samlModel.rootNode
@@ -60,42 +66,38 @@ class KeyCloak {
 
         settings.spEntityId = rootNode.SP.@entityID[0]
         settings.spAssertionConsumerServiceUrl = samlModel.assertionEndPoint
-        //settings.spSingleLogoutServiceUrl = samlModel.logoutEndpoint
         settings.spNameIDFormat = rootNode.SP.@nameIDPolicyFormat[0]
 
 
         def now = Instant.parse(validUntil)
         Calendar validUntilCalendar = now.toCalendar()
-        def cacheDuration=Integer.MAX_VALUE
-        def result = new Metadata(settings,validUntilCalendar,cacheDuration).getMetadataString()
+        def cacheDuration = Integer.MAX_VALUE
+        Metadata metadata = new Metadata(settings, validUntilCalendar, cacheDuration)
+        def spMetadata = metadata.getMetadataString()
 
         if (generateKeyStore) {
-            KeyStore keyStore
-            Metadata metadata = new Metadata(settings,validUntilCalendar,cacheDuration)
-            keyStore = CertificateGenerator.generateCertificate(hostname, 365, certPassword, certAlias)
-            keyStore.getKey(certAlias, certPassword.toCharArray())
+            KeyStore keyStore = CertificateGenerator.generateCertificate(hostname, 365, certPassword, certAlias)
             def certificate = keyStore.getCertificate(certAlias)
-            result = metadata.signMetadata(metadata.metadataString, keyStore.getKey(certAlias, certPassword.toCharArray()), certificate, RSA_SHA256, SHA256)
+            spMetadata = metadata.signMetadata(metadata.metadataString, keyStore.getKey(certAlias, certPassword.toCharArray()), certificate, RSA_SHA256, SHA256)
         }
         def file = new File(destFile as String)
         if (!file.exists()) {
             file.createNewFile()
         }
-        println("generating file ${file.getAbsolutePath()}")
-        file.text = result
+        logger.info("generating file ${file.getAbsolutePath()}")
+        file.text = spMetadata
     }
 
-    private Object getSamlProperty(String propertyName,boolean quiet=false) {
-        if (!samlProperties.containsKey(propertyName)){
+    private Object getSamlProperty(String propertyName, boolean quiet = false) {
+        if (!samlProperties.containsKey(propertyName)) {
             throw new IllegalArgumentException("Property $propertyName is not set. Set a valid value and retry.")
         }
         def value = samlProperties.get(propertyName)
-        if (!quiet){
-            logger.debug("$propertyName = $value")
-        }else{
-            logger.debug("$propertyName = ***")
+        def display = value
+        if (quiet) {
+            display = "*******"
         }
-
+        logger.info("using property [$propertyName=$display]")
         value
     }
 
@@ -106,10 +108,10 @@ class KeyCloak {
     }
 
 
-    def getModel(String xmlFileName, String endPoint) {
-        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
-        new SamlModel(xmlContent, endPoint)
-    }
+    //    def getModel(String xmlFileName, String endPoint) {
+    //        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
+    //        new SamlModel(xmlContent, endPoint)
+    //    }
 
 
 }
