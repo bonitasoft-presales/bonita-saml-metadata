@@ -3,6 +3,7 @@ plugins {
     id 'java'
     id 'application'
 
+    id "com.bonitasoft.gradle.bonita-release" version "0.1.43"
     id "com.bonitasoft.gradle.bonita-formatting" version "0.1.43"
 }
 
