@@ -72,12 +72,12 @@ class KeyCloak {
         Calendar validUntilCalendar
         Integer cacheDurationInt
 
-       if (validUntil.isPresent()){
-           def now = Instant.parse(validUntil)
+        if (validUntil.isPresent() && validUntil.get().toString().trim().length() > 0) {
+            def now = Instant.parse(validUntil.get())
             validUntilCalendar = now.toCalendar()
-       }
-        if (cacheDuration.isPresent()){
-            cacheDurationInt=cacheDuration.get()
+        }
+        if (cacheDuration.isPresent()) {
+            cacheDurationInt = cacheDuration.get()
         }
 
         Metadata metadata = new Metadata(settings, validUntilCalendar, cacheDurationInt)
