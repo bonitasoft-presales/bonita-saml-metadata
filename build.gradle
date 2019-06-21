@@ -25,8 +25,12 @@ dependencies {
     compile 'org.bouncycastle:bcprov-jdk15on:1.61'
     compile 'org.bouncycastle:bcpkix-jdk15on:1.61'
     compile 'ch.qos.logback:logback-classic:1.2.3'
-    compile 'com.onelogin:java-saml:2.4.0'
     compile 'commons-cli:commons-cli:1.4'
+
+    compile 'joda-time:joda-time:2.9.4'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.santuario:xmlsec:2.0.7'
+    compile files("lib/java-saml-core-2.4.1.bonita.jar")
 
     implementation 'org.codehaus.groovy:groovy-all:2.5.4'
     testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
