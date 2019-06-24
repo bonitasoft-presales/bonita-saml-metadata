@@ -120,8 +120,8 @@ class AppTest extends Specification implements SamlTestHelper {
 
         then:
         def expected = '''<?xml version="1.0"?>
-<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2050-12-31T15:20:09Z"
-                     cacheDuration="PT2147483647S" entityID="http://entity-id.com:8081/path/" ID="_f0948d2e-05fd-482e-b4a5-b2ad3735ef37">
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     entityID="http://entity-id.com:8081/path/" ID="_f0948d2e-05fd-482e-b4a5-b2ad3735ef37">
     <md:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="false"
                         protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:KeyDescriptor use="signing">

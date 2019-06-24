@@ -67,4 +67,24 @@ class KeyCloakTest extends Specification {
         def parsed = new XmlParser().parseText(xmlContent as String)
         parsed.@validUntil == "2050-12-31T15:20:09Z"
     }
+
+    def "should handle no validUntil attribute"() {
+        given:
+        def xmlFile = "./keycloak-example-keys.xml"
+        def xmlContent1 = new File(this.class.getResource("/${xmlFile}").file).text
+        def samlModel = new SamlModel(xmlContent1, "http://example.com:1234/bonita")
+        Properties properties = new Properties()
+        properties.load(this.class.getResourceAsStream("/application.properties"))
+        def tempFile = Files.createTempFile("metadata", "xml").toFile()
+        properties.setProperty("org.bonitasoft.metadata.dest_file", tempFile.getAbsolutePath())
+        properties.remove("org.bonitasoft.validUntil")
+        keyCloak = new KeyCloak(samlModel,properties,logger)
+
+        when:
+        def xmlContent = keyCloak.generateMetadata()
+
+        then: 'valid until is not in generated file'
+        def parsed = new XmlParser().parseText(xmlContent as String)
+        parsed.@validUntil == null
+    }
 }

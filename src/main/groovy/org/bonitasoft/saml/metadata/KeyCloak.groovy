@@ -36,18 +36,19 @@ class KeyCloak {
     }
 
     def generateMetadata() {
-        def destFile = getSamlProperty("org.bonitasoft.metadata.dest_file")
-        def generateKeyStore = Boolean.parseBoolean(getSamlProperty("org.bonitasoft.keystore.generate"))
+        def destFile = getRequiredSamlProperty("org.bonitasoft.metadata.dest_file")
+        def generateKeyStore = Boolean.parseBoolean(getRequiredSamlProperty("org.bonitasoft.keystore.generate"))
         def certAlias
         def certPassword
         def hostname
         if (generateKeyStore) {
-            certAlias = getSamlProperty("org.bonitasoft.keystore.cert_alias")
-            certPassword = getSamlProperty("org.bonitasoft.keystore.cert_password", true)
-            hostname = getSamlProperty("org.bonitasoft.hostname")
+            certAlias = getRequiredSamlProperty("org.bonitasoft.keystore.cert_alias")
+            certPassword = getRequiredSamlProperty("org.bonitasoft.keystore.cert_password", true)
+            hostname = getRequiredSamlProperty("org.bonitasoft.hostname")
         }
 
-        def validUntil = getSamlProperty("org.bonitasoft.validUntil")
+        def validUntil = Optional.ofNullable(getSamlProperty("org.bonitasoft.validUntil", false, false))
+        def cacheDuration = Optional.ofNullable(getSamlProperty("org.bonitasoft.cacheDuration", false, false))
 
         Node rootNode = samlModel.rootNode
 
@@ -68,11 +69,18 @@ class KeyCloak {
         settings.spAssertionConsumerServiceUrl = samlModel.assertionEndPoint
         settings.spNameIDFormat = rootNode.SP.@nameIDPolicyFormat[0]
 
+        Calendar validUntilCalendar
+        Integer cacheDurationInt
 
-        def now = Instant.parse(validUntil)
-        Calendar validUntilCalendar = now.toCalendar()
-        def cacheDuration = Integer.MAX_VALUE
-        Metadata metadata = new Metadata(settings, validUntilCalendar, cacheDuration)
+        if (validUntil.isPresent() && validUntil.get().toString().trim().length() > 0) {
+            def now = Instant.parse(validUntil.get())
+            validUntilCalendar = now.toCalendar()
+        }
+        if (cacheDuration.isPresent()) {
+            cacheDurationInt = cacheDuration.get()
+        }
+
+        Metadata metadata = new Metadata(settings, validUntilCalendar, cacheDurationInt)
         def spMetadata = metadata.getMetadataString()
 
         if (generateKeyStore) {
@@ -88,8 +96,12 @@ class KeyCloak {
         file.text = spMetadata
     }
 
-    private Object getSamlProperty(String propertyName, boolean quiet = false) {
-        if (!samlProperties.containsKey(propertyName)) {
+    def getRequiredSamlProperty(String propertyName, boolean required = true, boolean quiet = false) {
+        getSamlProperty(propertyName, required, quiet)
+    }
+
+    def getSamlProperty(String propertyName, boolean required, boolean quiet) {
+        if (required && !samlProperties.containsKey(propertyName)) {
             throw new IllegalArgumentException("Property $propertyName is not set. Set a valid value and retry.")
         }
         def value = samlProperties.get(propertyName)
@@ -100,6 +112,7 @@ class KeyCloak {
         logger.info("using property [$propertyName=$display]")
         value
     }
+
 
     def setSamlProperty(String propertyName, String keycloakProperty) {
         if (keycloakProperty != null) {
