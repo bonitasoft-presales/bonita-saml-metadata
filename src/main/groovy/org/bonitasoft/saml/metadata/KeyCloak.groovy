@@ -66,12 +66,9 @@ class KeyCloak {
             certPassword = getRequiredSamlProperty("org.bonitasoft.keystore.cert_password", true)
             hostname = getRequiredSamlProperty("org.bonitasoft.hostname")
         }
-        def validUntil = getRequiredSamlProperty("org.bonitasoft.validUntil")
 
         def validUntil = Optional.ofNullable(getSamlProperty("org.bonitasoft.validUntil", false, false))
         def cacheDuration = Optional.ofNullable(getSamlProperty("org.bonitasoft.cacheDuration", false, false))
-
-        Node rootNode = samlModel.rootNode
 
         //SP certificate
         setSamlProperty("onelogin.saml2.sp.x509cert", certificatePem)
@@ -145,18 +142,9 @@ class KeyCloak {
         value
     }
 
-
     def setSamlProperty(String propertyName, String keycloakProperty) {
         if (keycloakProperty != null) {
             samlProperties.put(propertyName, keycloakProperty)
         }
     }
-
-
-    //    def getModel(String xmlFileName, String endPoint) {
-    //        def xmlContent = new File(this.class.getResource("/$xmlFileName").file).text
-    //        new SamlModel(xmlContent, endPoint)
-    //    }
-
-
 }
