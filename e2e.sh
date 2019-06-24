@@ -19,6 +19,9 @@ ls -l
 # check help
 bin/bonita-saml-metadata --help
 
+# check default properties has all required properties
+bin/bonita-saml-metadata --properties ./application.properties
+
 # check generate
 bin/bonita-saml-metadata --properties ./application-signed.properties
 
