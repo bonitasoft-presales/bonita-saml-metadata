@@ -87,4 +87,25 @@ class KeyCloakTest extends Specification {
         def parsed = new XmlParser().parseText(xmlContent as String)
         parsed.@validUntil == null
     }
+
+    def "should handle keyDescriptor usage for encryption"() {
+        given:
+        def xmlFile = "./keycloak-example-keys.xml"
+        def xmlContent1 = new File(this.class.getResource("/${xmlFile}").file).text
+        def samlModel = new SamlModel(xmlContent1, "http://example.com:1234/bonita")
+        Properties properties = new Properties()
+        properties.load(this.class.getResourceAsStream("/application.properties"))
+        def tempFile = Files.createTempFile("metadata", "xml").toFile()
+        properties.setProperty("org.bonitasoft.metadata.dest_file", tempFile.getAbsolutePath())
+        properties.setProperty("org.bonitasoft.validUntil", "2050-12-31T15:20:09Z")
+        keyCloak = new KeyCloak(samlModel,properties,logger)
+
+        when:
+        def xmlContent = keyCloak.generateMetadata()
+
+        then:
+        def parsed = new XmlParser().parseText(xmlContent as String)
+        parsed.get("md:SPSSODescriptor")[0].get("md:KeyDescriptor")[0].@use == "signing"
+        parsed.get("md:SPSSODescriptor")[0].get("md:KeyDescriptor")[1].@use == "encryption"
+    }
 }
