@@ -2,7 +2,7 @@
 import static groovy.json.JsonOutput.toJson
 
 ansiColor('xterm') {
-    node() {
+    node('bcd-7100') {
 
         stage("Checkout") {
              checkout scm
